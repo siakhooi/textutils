@@ -10,8 +10,6 @@ shellcheck:
 	scripts/shellcheck.sh
 set-version:
 	scripts/set-version.sh
-commit:
-	scripts/git-commit-and-push.sh
 release:
 	scripts/create-release.sh
 check-rpm-package:
@@ -37,3 +35,8 @@ prepare-bats-test:
 	scripts/bats-test-setup.sh
 bats-run:
 	scripts/bats-test-run.sh
+
+docker-build-rpm:
+	docker run --rm -v $(CURDIR):/workspaces docker.io/siakhooi/devcontainer:rpm44 scripts/build-rpms.sh
+docker-build-deb:
+	docker run --rm -v $(CURDIR):/workspaces docker.io/siakhooi/devcontainer:deb2604 scripts/build-deb.sh
