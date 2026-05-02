@@ -1,0 +1,10 @@
+repo: siakhooi/apt
+branch: main
+git_commit_user: textutils
+git_commit_email: textutils@siakhooi.github.io
+git_commit_message: "textutils: Auto deploy"
+
+files:
+  - source: siakhooi-textutils_*_amd64.deb
+    target: docs/pool/main/binary-amd64/
+    items: 1
