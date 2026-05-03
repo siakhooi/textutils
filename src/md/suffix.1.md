@@ -26,7 +26,7 @@ This is line 2 in filename1 \>\>\>\>
 MIT
 
 # BUGS
-Report bugs at https://github.com/siakhooi/bash-textutils/issues.
+Report bugs at https://github.com/siakhooi/textutils/issues.
 
 # SEE ALSO
 prefix(1), siakhooi-textutils(1)

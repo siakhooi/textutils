@@ -23,7 +23,7 @@ Collection of programs related to text transformations and evaluations.
 MIT
 
 # BUGS
-Report bugs at https://github.com/siakhooi/bash-textutils/issues.
+Report bugs at https://github.com/siakhooi/textutils/issues.
 
 # SEE ALSO
 prefix(1), suffix(1), is-true(1), is-false(1), make-table(1)

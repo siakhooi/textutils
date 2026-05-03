@@ -18,7 +18,7 @@ $ cat filename1.csv | **make-table** 'Name,Version'
 MIT
 
 # BUGS
-Report bugs at https://github.com/siakhooi/bash-textutils/issues.
+Report bugs at https://github.com/siakhooi/textutils/issues.
 
 # SEE ALSO
 siakhooi-textutils(1)

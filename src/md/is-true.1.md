@@ -30,7 +30,7 @@ $ is-true off || echo no
 MIT
 
 # BUGS
-Report bugs at https://github.com/siakhooi/bash-textutils/issues.
+Report bugs at https://github.com/siakhooi/textutils/issues.
 
 # SEE ALSO
 siakhooi-textutils(1), is-false(1)

@@ -25,7 +25,7 @@ $ **prefix** '>>>>\ ' filename1
 MIT
 
 # BUGS
-Report bugs at https://github.com/siakhooi/bash-textutils/issues.
+Report bugs at https://github.com/siakhooi/textutils/issues.
 
 # SEE ALSO
 suffix(1), siakhooi-textutils(1)

@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        commands to transform line of texts.
 
 License:        MIT
-URL:            https://github.com/siakhooi/bash-textutils
+URL:            https://github.com/siakhooi/textutils
 Source0:        https://github.com/siakhooi/%{name}/archive/refs/tags/${version}.tar.gz
 BuildArch:      noarch
 
