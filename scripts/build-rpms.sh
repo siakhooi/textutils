@@ -1,40 +1,100 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+#
+# Description: Build an RPM package from the source files.
+# Usage: ./build-rpms.sh [options]
+#
 
-rm -rf ~/rpmbuild
-rpmdev-setuptree
+set -euo pipefail
 
+if [[ ! -f ./build.env ]]; then
+	echo "Error: build.env file not found. Please create it with the necessary variables."
+	exit 1
+fi
+# shellcheck disable=SC1091
+source ./build.env
+if [[ -z "${PACKAGE_NAME:-}" ]]; then
+	echo "Error: PACKAGE_NAME variable not set in build.env."
+	exit 1
+fi
+
+# ===== Constants =====
 readonly SOURCE=src
 readonly TARGET=~/rpmbuild/BUILD/
 
-# Spec File
-cp $SOURCE/RPMS/siakhooi-textutils.spec ~/rpmbuild/SPECS
+# ===== Argument Parsing =====
+parse_args() {
+	while getopts "h" opt; do
+		case "${opt}" in
+		h)
+			usage
+			exit 0
+			;;
+		*)
+			usage
+			exit 1
+			;;
+		esac
+	done
+	shift $((OPTIND - 1))
+}
+# ===== Helper Functions =====
+clean_rpmbuild() {
+	rm -rf ~/rpmbuild
+}
+setup_rpmbuild_tree() {
+	rpmdev-setuptree
+}
+copy_spec_file() {
+	cp $SOURCE/RPMS/"${PACKAGE_NAME}".spec ~/rpmbuild/SPECS
+}
+copy_binary_files() {
+	mkdir -p $TARGET/usr/bin
+	cp -vr $SOURCE/bin $TARGET/usr
+	chmod 755 $TARGET/usr/bin/*
+}
+copy_license_file() {
+	cp -vf ./LICENSE "$TARGET"
+}
+build_man_pages() {
+	mkdir -p $TARGET/usr/share/man/man1/
+	fileList=$(cd $SOURCE/md && find ./*.1.md | sed 's/.md//')
+	for file in $fileList; do
+		pandoc "$SOURCE/md/$file.md" -s -t man | gzip -9 >"$TARGET/usr/share/man/man1/$file.gz"
+	done
+}
+build_rpm_package() {
+	rpmlint ~/rpmbuild/SPECS/"${PACKAGE_NAME}".spec
+	rpmbuild -bb -vv ~/rpmbuild/SPECS/"${PACKAGE_NAME}".spec
+	cp -vf ~/rpmbuild/RPMS/noarch/"${PACKAGE_NAME}"-*.rpm .
+}
+query_rpm_package() {
+	tree ~/rpmbuild/
+	rpm -ql ~/rpmbuild/RPMS/noarch/"${PACKAGE_NAME}"-*.rpm
+}
+generate_rpm_checksums() {
+	rpm_file=$(basename "$(ls ./"${PACKAGE_NAME}"-*.rpm)")
+	sha256sum "$rpm_file" >"$rpm_file.sha256sum"
+	sha512sum "$rpm_file" >"$rpm_file.sha512sum"
+}
+# ===== Main Logic =====
+main() {
 
-# Binary File
-mkdir -p $TARGET/usr/bin
-cp -vr $SOURCE/bin $TARGET/usr
-chmod 755 $TARGET/usr/bin/*
+	parse_args
+	clean_rpmbuild
+	setup_rpmbuild_tree
 
-# Man Pages
-mkdir -p $TARGET/usr/share/man/man1/
-fileList=$(cd $SOURCE/md && find ./*.1.md | sed 's/.md//')
-for file in $fileList; do
-  pandoc "$SOURCE/md/$file.md" -s -t man | gzip -9 >"$TARGET/usr/share/man/man1/$file.gz"
-done
+	copy_spec_file
 
-# License
-cp -vf ./LICENSE "$TARGET"
+	copy_binary_files
+	copy_license_file
 
-# build rpm file
-rpmlint ~/rpmbuild/SPECS/siakhooi-textutils.spec
-rpmbuild -bb -vv ~/rpmbuild/SPECS/siakhooi-textutils.spec
-cp -vf ~/rpmbuild/RPMS/noarch/siakhooi-textutils-*.rpm .
+	build_man_pages
 
-# query
-tree ~/rpmbuild/
-rpm -ql ~/rpmbuild/RPMS/noarch/siakhooi-textutils-*.rpm
+	build_rpm_package
 
-rpm_file=$(basename "$(ls ./siakhooi-textutils-*.rpm)")
+	query_rpm_package
+	generate_rpm_checksums
+}
 
-sha256sum "$rpm_file" >"$rpm_file.sha256sum"
-sha512sum "$rpm_file" >"$rpm_file.sha512sum"
+# ===== Entrypoint =====
+main "$@"

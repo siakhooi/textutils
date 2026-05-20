@@ -1,22 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Adds a suffix to each line of input.
+# Usage: suffix [suffix] [inputFile]
+#
+set -Eeuo pipefail
+shopt -s inherit_errexit
 
 if [[ $# -ne 1 ]] && [[ $# -ne 2 ]]; then
-  echo "Usage: $(basename "$0") suffix [inputFile]"
-  exit 0
+	echo "Usage: $(basename "$0") suffix [inputFile]" >&2
+	exit 1
 fi
 
-SUFFIX=$1
+readonly SUFFIX="$1"
 
 if [[ $# -eq 1 ]]; then
-  INFILE=/dev/stdin
+	readonly INFILE=/dev/stdin
 else
-  INFILE=$2
-  if ! test -r "$INFILE" -a -f "$INFILE"; then
-    echo "Input file $INFILE is not readable." >&2
-    exit 1
-  fi
+	readonly INFILE="$2"
+	if [[ ! -f "$INFILE" ]]; then
+		echo "Error: Input file '$INFILE' does not exist or is not a file." >&2
+		exit 1
+	fi
+	if [[ ! -r "$INFILE" ]]; then
+		echo "Error: Input file '$INFILE' is not readable." >&2
+		exit 1
+	fi
 fi
 
-while IFS='' read -r line; do
-  echo "${line}$SUFFIX"
+while IFS='' read -r line || [[ -n "$line" ]]; do
+	printf '%s\n' "${line}${SUFFIX}"
 done <"$INFILE"

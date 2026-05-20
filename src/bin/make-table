@@ -1,9 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: formats input into a table.
+# Usage: make-table [columns]
+#
+set -Eeuo pipefail
+shopt -s inherit_errexit
 
-columns=$1
+# Check required commands
+command -v column >/dev/null 2>&1 || {
+	echo "Error: 'column' command not found" >&2
+	exit 1
+}
+
+readonly columns="${1:-}"
 
 OPTIONS=()
 
-[[ -n $columns ]] && OPTIONS+=(-N"$columns")
+[[ -n "$columns" ]] && OPTIONS+=(-N"$columns")
 
-column -s, -t "${OPTIONS[@]}"
+readonly OPTIONS
+
+column -s, -t -- "${OPTIONS[@]}"

@@ -1,26 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Generate hyperlinks in terminal using ANSI escape codes.
+# Usage: hyperlink [options]
+#
+
+set -Eeuo pipefail
+shopt -s inherit_errexit
 
 usage() {
-	echo "Usage: $(basename "$0") [-h] url title"
+	echo "Usage: $(basename "$0") [-h] url title" >&2
 }
-while getopts "h" arg; do
-	case $arg in
+
+while getopts ":h" arg; do
+	case "$arg" in
 	h)
 		usage
 		exit 0
 		;;
-	*)
+	\?)
+		echo "Error: Invalid option -${OPTARG}" >&2
 		usage
 		exit 1
 		;;
 	esac
 done
 shift $((OPTIND - 1))
+
 if [[ $# -ne 2 ]]; then
+	echo "Error: Exactly 2 arguments required (url and title)" >&2
 	usage
-	exit 0
+	exit 1
 fi
 
-readonly url=$1
-readonly title=$2
-printf "%b" "\e]8;;${url}\e\\${title}\e]8;;\e\\"
+readonly url="$1"
+readonly title="$2"
+
+# Validate inputs are not empty
+if [[ -z "$url" ]]; then
+	echo "Error: URL cannot be empty" >&2
+	exit 1
+fi
+if [[ -z "$title" ]]; then
+	echo "Error: Title cannot be empty" >&2
+	exit 1
+fi
+
+printf '%b' "\e]8;;${url}\e\\${title}\e]8;;\e\\"

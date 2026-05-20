@@ -19,9 +19,6 @@ prepare-on-codespace:
 	sudo apt update -y
 	sudo apt install -y shellcheck pandoc fakeroot
 
-run-in-container:
-	. in-container-init.sh
-
 generate-test-outputs-in-docker:
 	test/generate-test-outputs.sh test/expected
 	sudo chown siakhooi:siakhooi test/expected/*
@@ -36,7 +33,11 @@ prepare-bats-test:
 bats-run:
 	scripts/bats-test-run.sh
 
+root := justfile_directory()
+
 docker-build-rpm:
-	docker run --rm -v $(CURDIR):/workspaces docker.io/siakhooi/devcontainer:rpm44 scripts/build-rpms.sh
+	docker run --rm -v {{ root }}:/workspaces docker.io/siakhooi/devcontainer:rpm44 scripts/build-rpms.sh
 docker-build-deb:
-	docker run --rm -v $(CURDIR):/workspaces docker.io/siakhooi/devcontainer:deb2604 scripts/build-deb.sh
+	docker run --rm -v {{ root }}:/workspaces docker.io/siakhooi/devcontainer:deb2604 scripts/build-deb.sh
+
+all: clean set-version shellcheck docker-build-deb docker-build-rpm

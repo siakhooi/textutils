@@ -1,15 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: checks if the input is a false value.
+# Usage: is-false [value]
+#
+set -Eeuo pipefail
+shopt -s inherit_errexit
 
 [[ $# -ne 1 ]] && exit 1
 
-T="$*"
-T=${T^^}
+readonly T="${1^^}"
 
-[[ $T == 'N' ]] && exit 0
-[[ $T == 'NO' ]] && exit 0
-[[ $T == 'F' ]] && exit 0
-[[ $T == 'FALSE' ]] && exit 0
-[[ $T == 'OFF' ]] && exit 0
-[[ $T == '0' ]] && exit 0
+case "$T" in
+N | NO | F | FALSE | OFF | 0) exit 0 ;;
+esac
 
 exit 1

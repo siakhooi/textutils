@@ -1,8 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Returns the first non-empty argument (like SQL COALESCE/NVL).
+# Usage: nvl [value...]
+#
+set -Eeuo pipefail
+shopt -s inherit_errexit
 
 for arg in "$@"; do
-  if [ -n "$arg" ]; then
-    echo "$arg"
-    break
-  fi
+	if [[ -n "$arg" ]]; then
+		printf '%s\n' "$arg"
+		exit 0
+	fi
 done
+
+exit 1
