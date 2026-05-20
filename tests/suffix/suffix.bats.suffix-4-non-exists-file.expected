@@ -1,1 +1,1 @@
-Input file ./non-exists-file is not readable.
+Error: Input file './non-exists-file' does not exist or is not a file.

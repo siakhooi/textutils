@@ -1,1 +1,1 @@
-Input file /etc is not readable.
+Error: Input file '/etc' does not exist or is not a file.

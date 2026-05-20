@@ -22,18 +22,17 @@ prepare-on-codespace:
 generate-test-outputs-in-docker:
 	test/generate-test-outputs.sh test/expected
 	sudo chown siakhooi:siakhooi test/expected/*
-run-tests:
-	test/run-tests.sh
-
 test-man:
 	pandoc src/md/is-true.1.md -s -t man | man -l -
 
-prepare-bats-test:
+test-setup:
 	scripts/bats-test-setup.sh
-bats-run:
+test:
 	scripts/bats-test-run.sh
 
 root := justfile_directory()
+docker-test:
+	docker run --rm -v {{ root }}:/workspaces docker.io/siakhooi/devcontainer:deb2604 scripts/bats-test.sh
 
 docker-build-rpm:
 	docker run --rm -v {{ root }}:/workspaces docker.io/siakhooi/devcontainer:rpm44 scripts/build-rpms.sh
