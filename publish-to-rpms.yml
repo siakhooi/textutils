@@ -2,7 +2,7 @@ repo: siakhooi/rpms
 branch: main
 git_commit_user: textutils
 git_commit_email: textutils@siakhooi.github.io
-git_commit_message: "textutils: Auto deploy"
+git_commit_message: "{repo_name}: {ref_name} | {commit_short}"
 
 files:
   - source: siakhooi-textutils-*.fc*.noarch.rpm
