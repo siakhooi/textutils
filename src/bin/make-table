@@ -20,4 +20,4 @@ OPTIONS=()
 
 readonly OPTIONS
 
-column -s, -t -- "${OPTIONS[@]}"
+column -s, -t "${OPTIONS[@]}"
